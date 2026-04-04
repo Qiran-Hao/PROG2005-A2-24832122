@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PROG2005 A2 - TypeScript Inventory System</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- Page title -->
+    <header class="page-header">
+      <h1>Inventory Management System</h1>
+      <p>PROG2005 Assessment 2 - Part 1 (TypeScript)</p>
+    </header>
+
+    <!-- Message prompt box (alternative to alert） -->
+    <div id="message" class="message-box"></div>
+
+    <!-- Search bar -->
+    <section class="search-section">
+      <h2>Search Items</h2>
+      <input 
+        type="text" 
+        id="search-input" 
+        placeholder="Type item name to search..."
+        oninput="handleSearch(this.value)"
+        class="search-input"
+      >
+    </section>
+
+    <!-- Operate the form area -->
+    <div class="form-grid">
+      <!-- New product form -->
+      <section class="form-card">
+        <h2>Add New Item</h2>
+        <form id="add-form" onsubmit="event.preventDefault(); handleAddItem();">
+          <div class="form-group">
+            <label>Item ID <span class="required">*</span></label>
+            <input type="text" id="item-id" required placeholder="Unique Item ID">
+          </div>
+          <div class="form-group">
+            <label>Item Name <span class="required">*</span></label>
+            <input type="text" id="item-name" required placeholder="Item Name">
+          </div>
+          <div class="form-group">
+            <label>Category <span class="required">*</span></label>
+            <select id="category" required>
+              <option value="Electronics">Electronics</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Tools">Tools</option>
+              <option value="Miscellaneous">Miscellaneous</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Quantity <span class="required">*</span></label>
+            <input type="number" id="quantity" required min="0" placeholder="0">
+          </div>
+          <div class="form-group">
+            <label>Price ($) <span class="required">*</span></label>
+            <input type="number" id="price" required min="0" step="0.01" placeholder="0.00">
+          </div>
+          <div class="form-group">
+            <label>Supplier Name <span class="required">*</span></label>
+            <input type="text" id="supplier-name" required placeholder="Supplier Name">
+          </div>
+          <div class="form-group checkbox-group">
+            <input type="checkbox" id="is-popular">
+            <label>Popular Item</label>
+          </div>
+          <div class="form-group">
+            <label>Comment</label>
+            <textarea id="comment" rows="2" placeholder="Optional comment"></textarea>
+          </div>
+          <button type="submit" class="btn btn-add">Add Item</button>
+        </form>
+      </section>
+
+      <!-- Update the product list -->
+      <section class="form-card">
+        <h2>Update Item (By Name)</h2>
+        <form id="update-form" onsubmit="event.preventDefault(); handleUpdateItem();">
+          <div class="form-group">
+            <label>Item Name to Update <span class="required">*</span></label>
+            <input type="text" id="update-item-name" required placeholder="Exact Item Name">
+          </div>
+          <div class="form-group">
+            <label>New Quantity</label>
+            <input type="number" id="update-quantity" min="0" placeholder="Leave blank to keep unchanged">
+          </div>
+          <div class="form-group">
+            <label>New Price ($)</label>
+            <input type="number" id="update-price" min="0" step="0.01" placeholder="Leave blank to keep unchanged">
+          </div>
+          <div class="form-group checkbox-group">
+            <input type="checkbox" id="update-is-popular">
+            <label>Mark as Popular Item</label>
+          </div>
+          <button type="submit" class="btn btn-update">Update Item</button>
+        </form>
+      </section>
+
+      <!-- Delete the product form-->
+      <section class="form-card">
+        <h2>Delete Item (By Name)</h2>
+        <form id="delete-form" onsubmit="event.preventDefault(); handleDeleteItem();">
+          <div class="form-group">
+            <label>Item Name to Delete <span class="required">*</span></label>
+            <input type="text" id="delete-item-name" required placeholder="Exact Item Name">
+          </div>
+          <button type="submit" class="btn btn-delete">Delete Item</button>
+        </form>
+      </section>
+    </div>
+
+    <!-- 商品列表区域 -->
+    <section class="list-section">
+      <h2>All Inventory Items</h2>
+      <div id="all-items-container" class="items-grid"></div>
+    </section>
+
+    <section class="list-section">
+      <h2>Popular Items</h2>
+      <div id="popular-items-container" class="items-grid"></div>
+    </section>
+  </div>
+
+  <!-- 引入编译后的JS文件 -->
+  <script src="dist/app.js"></script>
+</body>
+</html>
