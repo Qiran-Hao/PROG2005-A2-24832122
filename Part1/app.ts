@@ -285,3 +285,74 @@ export function handleSearch(keyword: string): void {
   const matchedItems = searchItemByName(keyword);
   renderItemList(matchedItems, ALL_ITEMS_CONTAINER);
 }
+
+/**
+ * Handle the submission of new product forms
+ */
+export function handleAddItem(): void {
+  // Get the form input value
+  const itemId = (document.getElementById('item-id') as HTMLInputElement).value.trim();
+  const itemName = (document.getElementById('item-name') as HTMLInputElement).value.trim();
+  const category = (document.getElementById('category') as HTMLSelectElement).value as Item['category'];
+  const quantity = Number((document.getElementById('quantity') as HTMLInputElement).value);
+  const price = Number((document.getElementById('price') as HTMLInputElement).value);
+  const supplierName = (document.getElementById('supplier-name') as HTMLInputElement).value.trim();
+  const isPopular = (document.getElementById('is-popular') as HTMLInputElement).checked;
+  const comment = (document.getElementById('comment') as HTMLTextAreaElement).value.trim();
+
+  // Construct a commodity object
+  const newItem: Item = {
+    itemId,
+    itemName,
+    category,
+    quantity,
+    price,
+    supplierName,
+    stockStatus: autoCalculateStockStatus(quantity),
+    isPopular,
+    comment: comment || undefined
+  };
+
+  // Call the newly added function
+  const isSuccess = addItem(newItem);
+
+  // Clear the form after a successful addition
+  if (isSuccess) {
+    (document.getElementById('add-form') as HTMLFormElement).reset();
+  }
+}
+
+/**
+ * Handle the submission of updated product forms
+ */
+export function handleUpdateItem(): void {
+  const itemName = (document.getElementById('update-item-name') as HTMLInputElement).value.trim();
+  const newQuantity = Number((document.getElementById('update-quantity') as HTMLInputElement).value);
+  const newPrice = Number((document.getElementById('update-price') as HTMLInputElement).value);
+  const newIsPopular = (document.getElementById('update-is-popular') as HTMLInputElement).checked;
+
+  // Construct the data to be updated
+  const updatedData: Partial<Item> = {};
+  if (!isNaN(newQuantity)) updatedData.quantity = newQuantity;
+  if (!isNaN(newPrice)) updatedData.price = newPrice;
+  updatedData.isPopular = newIsPopular;
+
+  // Call the update function
+  updateItemByName(itemName, updatedData);
+
+  // Clear the form
+  (document.getElementById('update-form') as HTMLFormElement).reset();
+}
+
+/**
+ * Handle the submission of the product deletion form
+ */
+export function handleDeleteItem(): void {
+  const itemName = (document.getElementById('delete-item-name') as HTMLInputElement).value.trim();
+  // Call the deletion function
+  const isSuccess = deleteItemByName(itemName);
+  // Clear the form after successful deletion
+  if (isSuccess) {
+    (document.getElementById('delete-form') as HTMLFormElement).reset();
+  }
+}
