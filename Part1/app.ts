@@ -99,58 +99,58 @@ window.onload = () => {
 };
 
 /**
- * 新增商品功能，包含完整数据校验
- * @param item 待新增的商品对象
- * @returns 新增是否成功
+ * Add new item functionality with complete data validation
+ * @param item The item object to be added
+ * @returns Whether the addition was successful
  */
 export function addItem(item: Item): boolean {
-  // 1. 校验Item ID唯一性
+  // 1. Verify the uniqueness of the Item ID
   const isIdExists = inventory.some(existingItem => existingItem.itemId === item.itemId);
   if (isIdExists) {
     showMessage('Error: Item ID already exists!', true);
     return false;
   }
 
-  // 2. 校验必填项（除comment外所有字段必填）
+  // 2. Verification required fields
   if (!item.itemId || !item.itemName || !item.category || !item.supplierName) {
     showMessage('Error: All required fields must be filled!', true);
     return false;
   }
 
-  // 3. 校验数字字段非负
+  // 3. Verify that the numeric field is non-negative
   if (item.quantity < 0 || item.price < 0) {
     showMessage('Error: Quantity and price cannot be negative!', true);
     return false;
   }
 
-  // 4. 自动计算库存状态（超越HD标准）
+  // 4. Automatically calculate inventory status
   item.stockStatus = autoCalculateStockStatus(item.quantity);
 
-  // 5. 新增到库存数组
+  // 5. Add to the inventory array
   inventory.push(item);
   showMessage('Item added successfully!');
 
-  // 6. 重新渲染列表
+  // 6. 6. Re-render the list
   renderAllItems();
   renderPopularItems();
   return true;
 }
 
 /**
- * 按商品名称更新商品信息（作业强制要求）
- * @param itemName 待更新的商品名称
- * @param updatedData 待更新的字段数据
- * @returns 更新是否成功
+ * Update item information by item name
+ * @param itemName The name of the item to be updated
+ * @param updatedData The field data to be updated
+ * @returns Whether the update was successful
  */
 export function updateItemByName(itemName: string, updatedData: Partial<Item>): boolean {
-  // 1. 查找商品索引
+  // 1. Search for commodity index
   const itemIndex = inventory.findIndex(item => item.itemName.trim() === itemName.trim());
   if (itemIndex === -1) {
     showMessage('Error: Item not found!', true);
     return false;
   }
 
-  // 2. 校验数字字段非负（如果更新了数量/价格）
+  // 2. Verify that the numeric field is non-negative (if the quantity/price has been updated)
   if (updatedData.quantity !== undefined && updatedData.quantity < 0) {
     showMessage('Error: Quantity cannot be negative!', true);
     return false;
@@ -160,43 +160,43 @@ export function updateItemByName(itemName: string, updatedData: Partial<Item>): 
     return false;
   }
 
-  // 3. 自动更新库存状态（如果更新了数量）
+  //3. Automatically update inventory status (if the quantity is updated)
   if (updatedData.quantity !== undefined) {
     updatedData.stockStatus = autoCalculateStockStatus(updatedData.quantity);
   }
 
-  // 4. 更新商品信息
+  // 4. Update product information
   inventory[itemIndex] = { ...inventory[itemIndex], ...updatedData };
   showMessage('Item updated successfully!');
 
-  // 5. 重新渲染列表
+  // 5. Re-render the list
   renderAllItems();
   renderPopularItems();
   return true;
 }
 
 /**
- * 按商品名称删除商品，带确认提示（作业强制要求）
- * @param itemName 待删除的商品名称
- * @returns 删除是否成功
+ * Delete item by item name with confirmation prompt
+ * @param itemName The name of the item to be deleted
+ * @returns Whether the deletion was successful
  */
 export function deleteItemByName(itemName: string): boolean {
-  // 1. 确认删除
+  // 1. Confirm deletion
   const isConfirmed = confirm('Are you sure you want to delete this item? This action cannot be undone.');
   if (!isConfirmed) return false;
 
-  // 2. 查找并删除商品
+  // 2. Search for and delete the product
   const originalLength = inventory.length;
   inventory = inventory.filter(item => item.itemName.trim() !== itemName.trim());
 
-  // 3. 校验是否删除成功
+  //3. Verify whether the deletion was successful
   if (inventory.length === originalLength) {
     showMessage('Error: Item not found!', true);
     return false;
   }
 
   showMessage('Item deleted successfully!');
-  // 4. 重新渲染列表
+  // 4. Re-render the list
   renderAllItems();
   renderPopularItems();
   return true;
@@ -218,4 +218,70 @@ export function searchItemByName(keyword: string): Item[] {
  */
 export function getPopularItems(): Item[] {
   return inventory.filter(item => item.isPopular);
+}
+
+/**
+ * Render item list to page
+ * @param items The array of items to be rendered
+ * @param container The DOM container for rendering
+ */
+function renderItemList(items: Item[], container: HTMLElement): void {
+  // Empty the container
+  container.innerHTML = '';
+
+  // Prompt when there is no data
+  if (items.length === 0) {
+    container.innerHTML = '<p class="empty-tip">No items to display</p>';
+    return;
+  }
+
+  // Render the product card
+  items.forEach(item => {
+    container.innerHTML += `
+      <div class="item-card">
+        <div class="card-header">
+          <h3>${item.itemName}</h3>
+          <span class="item-id">ID: ${item.itemId}</span>
+        </div>
+        <div class="card-content">
+          <p><strong>Category:</strong> ${item.category}</p>
+          <p><strong>Quantity:</strong> ${item.quantity}</p>
+          <p><strong>Price:</strong> $${item.price.toFixed(2)}</p>
+          <p><strong>Supplier:</strong> ${item.supplierName}</p>
+          <p><strong>Stock Status:</strong> <span class="status-${item.stockStatus.toLowerCase().replace(' ', '-')}">${item.stockStatus}</span></p>
+          <p><strong>Popular Item:</strong> ${item.isPopular ? '✅ Yes' : '❌ No'}</p>
+          ${item.comment ? `<p><strong>Comment:</strong> ${item.comment}</p>` : ''}
+        </div>
+      </div>
+    `;
+  });
+}
+
+/**
+ * Render all items list
+ */
+export function renderAllItems(): void {
+  renderItemList(inventory, ALL_ITEMS_CONTAINER);
+}
+
+/**
+ * Render popular items list
+ */
+export function renderPopularItems(): void {
+  const popularItems = getPopularItems();
+  renderItemList(popularItems, POPULAR_ITEMS_CONTAINER);
+}
+
+/**
+ * Handle search input and render search results in real-time
+ * @param keyword Search keyword
+ */
+export function handleSearch(keyword: string): void {
+  if (!keyword.trim()) {
+    //When the key word is empty, re-render all the products
+    renderAllItems();
+    return;
+  }
+  const matchedItems = searchItemByName(keyword);
+  renderItemList(matchedItems, ALL_ITEMS_CONTAINER);
 }
