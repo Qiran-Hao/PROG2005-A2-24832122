@@ -1,1 +1,113 @@
-<p>inventory-manage works!</p>
+<div class="manage-container">
+  <h1>Inventory Management</h1>
+  <p>Add, update and delete inventory items here.</p>
+
+  <!-- Message prompt -->
+  <div *ngIf="alertMessage" class="alert" [ngClass]="isError ? 'alert-error' : 'alert-success'">
+    {{ alertMessage }}
+  </div>
+
+  <!-- Operation form grid -->
+  <div class="form-grid grid-3">
+    <!-- New product form -->
+    <div class="form-card card">
+      <h2>Add New Item</h2>
+      <form (ngSubmit)="handleAddItem()">
+        <div class="form-group">
+          <label>Item ID <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="newItem.itemId" name="itemId" required placeholder="Unique Item ID">
+        </div>
+        <div class="form-group">
+          <label>Item Name <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="newItem.itemName" name="itemName" required placeholder="Item Name">
+        </div>
+        <div class="form-group">
+          <label>Category <span class="required">*</span></label>
+          <select class="form-control" [(ngModel)]="newItem.category" name="category" required>
+            <option *ngFor="let cate of categories" [value]="cate">{{ cate }}</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Quantity <span class="required">*</span></label>
+          <input type="number" class="form-control" [(ngModel)]="newItem.quantity" name="quantity" required min="0" placeholder="0">
+        </div>
+        <div class="form-group">
+          <label>Price ($) <span class="required">*</span></label>
+          <input type="number" class="form-control" [(ngModel)]="newItem.price" name="price" required min="0" step="0.01" placeholder="0.00">
+        </div>
+        <div class="form-group">
+          <label>Supplier Name <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="newItem.supplierName" name="supplierName" required placeholder="Supplier Name">
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="add-is-popular" [(ngModel)]="newItem.isPopular" name="isPopular">
+          <label for="add-is-popular">Popular Item</label>
+        </div>
+        <div class="form-group">
+          <label>Comment</label>
+          <textarea class="form-control" [(ngModel)]="newItem.comment" name="comment" rows="2" placeholder="Optional comment"></textarea>
+        </div>
+        <button type="submit" class="btn btn-success w-100">Add Item</button>
+      </form>
+    </div>
+
+    <!-- Update the product list-->
+    <div class="form-card card">
+      <h2>Update Item (By Name)</h2>
+      <form (ngSubmit)="handleUpdateItem()">
+        <div class="form-group">
+          <label>Item Name to Update <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="targetItemName" name="targetItemName" required placeholder="Exact Item Name">
+        </div>
+        <div class="form-group">
+          <label>New Quantity</label>
+          <input type="number" class="form-control" [(ngModel)]="updateData.quantity" name="updateQuantity" min="0" placeholder="Leave blank to keep unchanged">
+        </div>
+        <div class="form-group">
+          <label>New Price ($)</label>
+          <input type="number" class="form-control" [(ngModel)]="updateData.price" name="updatePrice" min="0" step="0.01" placeholder="Leave blank to keep unchanged">
+        </div>
+        <div class="form-group checkbox-group">
+          <input type="checkbox" id="update-is-popular" [(ngModel)]="updateData.isPopular" name="updateIsPopular">
+          <label for="update-is-popular">Mark as Popular Item</label>
+        </div>
+        <button type="submit" class="btn btn-primary w-100">Update Item</button>
+      </form>
+    </div>
+
+    <!-- Delete the product form -->
+    <div class="form-card card">
+      <h2>Delete Item (By Name)</h2>
+      <form (ngSubmit)="handleDeleteItem()">
+        <div class="form-group">
+          <label>Item Name to Delete <span class="required">*</span></label>
+          <input type="text" class="form-control" [(ngModel)]="targetItemName" name="deleteItemName" required placeholder="Exact Item Name">
+        </div>
+        <button type="submit" class="btn btn-danger w-100">Delete Item</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Inventory list -->
+  <section class="list-section">
+    <h2>Current Inventory</h2>
+    <div class="items-grid grid-3">
+      <div *ngIf="inventory.length === 0" class="empty-tip">No items in inventory</div>
+      <div *ngFor="let item of inventory" class="item-card">
+        <div class="card-header">
+          <h3>{{ item.itemName }}</h3>
+          <span class="item-id">ID: {{ item.itemId }}</span>
+        </div>
+        <div class="card-content">
+          <p><strong>Category:</strong> {{ item.category }}</p>
+          <p><strong>Quantity:</strong> {{ item.quantity }}</p>
+          <p><strong>Price:</strong> ${{ item.price.toFixed(2) }}</p>
+          <p><strong>Supplier:</strong> {{ item.supplierName }}</p>
+          <p><strong>Stock Status:</strong> <span class="status-{{ item.stockStatus.toLowerCase().replace(' ', '-') }}">{{ item.stockStatus }}</span></p>
+          <p><strong>Popular Item:</strong> {{ item.isPopular ? '✅ Yes' : '❌ No' }}</p>
+          <p *ngIf="item.comment"><strong>Comment:</strong> {{ item.comment }}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>

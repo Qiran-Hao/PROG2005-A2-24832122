@@ -1,0 +1,43 @@
+.manage-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.manage-container h1 {
+  color: var(--primary-color);
+  margin-bottom: 8px;
+}
+
+.manage-container > p {
+  color: #64748b;
+  margin-bottom: 24px;
+}
+
+.form-grid {
+  margin-bottom: 40px;
+}
+
+.form-card h2 {
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+  color: var(--primary-color);
+}
+
+.w-100 {
+  width: 100%;
+}
+
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.checkbox-group input {
+  width: auto;
+}
+
+.list-section h2 {
+  margin-bottom: 20px;
+  font-size: 1.5rem;
+}
