@@ -1,1 +1,79 @@
-<p>search-filter works!</p>
+<div class="search-container">
+  <div class="page-header">
+    <h1>Search & Filter Inventory</h1>
+    <p>Find items by name, category, stock status, or popularity</p>
+  </div>
+
+  <!-- Search & Filter Panel -->
+  <div class="filter-card">
+    <div class="form-group">
+      <label>Search by Item Name</label>
+      <input
+        type="text"
+        [(ngModel)]="searchKeyword"
+        (input)="doSearch()"
+        placeholder="Type to search..."
+        class="search-input"
+      />
+    </div>
+
+    <div class="filter-row">
+      <div class="form-group">
+        <label>Filter by Category</label>
+        <select [(ngModel)]="selectedCategory" (change)="doSearch()" class="select-control">
+          <option value="">All Categories</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Furniture">Furniture</option>
+          <option value="Clothing">Clothing</option>
+          <option value="Tools">Tools</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Filter by Stock Status</label>
+        <select [(ngModel)]="selectedStockStatus" (change)="doSearch()" class="select-control">
+          <option value="">All Status</option>
+          <option value="In Stock">In Stock</option>
+          <option value="Low Stock">Low Stock</option>
+          <option value="Out of Stock">Out of Stock</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Popular Items Only</label>
+        <select [(ngModel)]="popularFilter" (change)="doSearch()" class="select-control">
+          <option value="all">All Items</option>
+          <option value="popular">Popular Only</option>
+          <option value="not-popular">Not Popular</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <!-- Results Count -->
+  <div class="result-info">
+    <p>Showing {{ filteredItems.length }} result(s)</p>
+  </div>
+
+  <!-- Item List -->
+  <div class="items-grid">
+    <div class="item-card" *ngFor="let item of filteredItems">
+      <h3>{{ item.itemName }}</h3>
+      <p class="item-id">ID: {{ item.itemId }}</p>
+      <p>Category: {{ item.category }}</p>
+      <p>Qty: {{ item.quantity }} | ${{ item.price.toFixed(2) }}</p>
+      <p>Supplier: {{ item.supplierName }}</p>
+      <p class="status {{ item.stockStatus.replace(' ', '-') }}">
+        {{ item.stockStatus }}
+      </p>
+      <p class="popular">
+        Popular: {{ item.isPopular ? '✅ Yes' : '❌ No' }}
+      </p>
+    </div>
+
+    <div class="empty" *ngIf="filteredItems.length === 0">
+      No items match your search criteria.
+    </div>
+  </div>
+</div>
