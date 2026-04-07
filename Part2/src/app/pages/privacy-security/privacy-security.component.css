@@ -1,0 +1,49 @@
+.privacy-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.card {
+  background: white;
+  margin-bottom: 20px;
+  padding: 25px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.header-card {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  color: white;
+  text-align: center;
+}
+
+.header-card h1 {
+  margin-bottom: 10px;
+}
+
+.card h2 {
+  color: #1e293b;
+  margin-bottom: 15px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 8px;
+}
+
+.card ul {
+  padding-left: 20px;
+}
+
+.card li {
+  margin-bottom: 10px;
+  line-height: 1.6;
+}
+
+.card li strong {
+  color: #2563eb;
+}
+
+@media (max-width: 768px) {
+  .card {
+    padding: 15px;
+  }
+}
