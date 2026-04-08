@@ -14,36 +14,49 @@ export class SearchFilterComponent implements OnInit {
   filteredItems: Item[] = [];
   inventory: Item[] = [];
 
+  selectedStockStatus: string = '';
+  popularFilter: string = 'all';
+
   constructor(private inventoryService: InventoryService) { }
 
   ngOnInit(): void {
-    // Subscribe to inventory data
     this.inventoryService.inventory$.subscribe(data => {
       this.inventory = data;
       this.applyFilter();
     });
   }
 
+  doSearch(): void {
+    this.applyFilter();
+  }
+
   /**
-   * Apply search and filter conditions
+   * Application search + filtering logic
    */
   applyFilter(): void {
     let result = [...this.inventory];
 
-    // Keyword search
+    // 1. Keyword search
     if (this.searchKeyword.trim()) {
       const lowerKeyword = this.searchKeyword.trim().toLowerCase();
       result = result.filter(item => item.itemName.toLowerCase().includes(lowerKeyword));
     }
 
-    // Classification filtering
-    if (this.selectedCategory !== 'All') {
+    // 2. Classification filtering
+    if (this.selectedCategory && this.selectedCategory !== 'All') {
       result = result.filter(item => item.category === this.selectedCategory);
     }
 
-    // Popular product filter
-    if (this.onlyPopular) {
+    // 3. Inventory status filtering
+    if (this.selectedStockStatus) {
+      result = result.filter(item => item.stockStatus === this.selectedStockStatus);
+    }
+
+    // 4. Popular product filter
+    if (this.popularFilter === 'popular') {
       result = result.filter(item => item.isPopular);
+    } else if (this.popularFilter === 'not-popular') {
+      result = result.filter(item => !item.isPopular);
     }
 
     this.filteredItems = result;
@@ -56,6 +69,8 @@ export class SearchFilterComponent implements OnInit {
     this.searchKeyword = '';
     this.selectedCategory = 'All';
     this.onlyPopular = false;
+    this.selectedStockStatus = '';
+    this.popularFilter = 'all';
     this.applyFilter();
   }
 

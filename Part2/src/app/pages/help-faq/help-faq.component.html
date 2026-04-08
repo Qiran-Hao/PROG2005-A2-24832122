@@ -1,1 +1,40 @@
-<p>help-faq works!</p>
+<div class="faq-container">
+  <div class="card header-card">
+    <h1>Help & FAQ</h1>
+    <p>Complete guide to using the Inventory Management System</p>
+  </div>
+
+  <div class="faq-list">
+    <div class="faq-item" *ngFor="let faq of faqs">
+      <div class="faq-question">
+        {{ faq.question }}
+      </div>
+      <div class="faq-answer">
+        {{ faq.answer }}
+      </div>
+    </div>
+  </div>
+
+  <div class="card troubleshooting">
+    <h2>Troubleshooting Guide</h2>
+    <h3>Common Issues & Solutions</h3>
+    <ul>
+      <li>
+        <strong>Error: "Item ID already exists"</strong>
+        <p>Solution: Choose a unique Item ID that doesn't already exist in the system.</p>
+      </li>
+      <li>
+        <strong>Error: "Negative values not allowed"</strong>
+        <p>Solution: Quantity and Price fields must be non-negative numbers. Enter 0 or higher.</p>
+      </li>
+      <li>
+        <strong>Page not rendering correctly</strong>
+        <p>Solution: Clear browser cache or use incognito mode. Ensure you're using a modern browser (Chrome, Firefox, Edge).</p>
+      </li>
+      <li>
+        <strong>Search not working</strong>
+        <p>Solution: Make sure you're typing in the search box on the Search page. The search is case-insensitive but requires at least one character.</p>
+      </li>
+    </ul>
+  </div>
+</div>
